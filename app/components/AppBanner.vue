@@ -26,7 +26,7 @@
             color="neutral"
             variant="solid"
             size="lg"
-            class="mt-2 bg-white font-semibold text-[var(--color-brand)] hover:bg-white/90"
+            class="mt-2 bg-white font-semibold text-black hover:bg-white/90"
           >
             {{ cta }}
           </UButton>
@@ -84,14 +84,16 @@
                 >★</span>
               </div>
             </div>
+            <NuxtLink :to="`/products/${product.id}`">
             <UButton
               color="neutral"
               variant="solid"
               size="lg"
-              class="mt-1 bg-white font-semibold text-[var(--color-brand)] hover:bg-white/90"
+              class="mt-1 bg-white font-semibold text-black hover:bg-white/90"
             >
               Shop now
             </UButton>
+            </NuxtLink>
           </div>
         </div>
       </div>

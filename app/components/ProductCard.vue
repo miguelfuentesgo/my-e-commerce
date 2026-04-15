@@ -3,37 +3,46 @@
     class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] transition-shadow hover:shadow-lg"
     :class="layout === 'horizontal' ? 'flex flex-row' : 'flex flex-col'"
   >
+    <!-- Image gallery -->
     <div
       class="group relative shrink-0 overflow-hidden bg-[var(--color-surface)]"
       :class="layout === 'horizontal' ? 'w-48 sm:w-56' : 'h-52 w-full'"
     >
-      <Transition name="fade" mode="out-in">
-        <NuxtImg
-          :key="currentIndex"
-          :src="images[currentIndex]"
-          :alt="`${name} – image ${currentIndex + 1}`"
-          class="h-full w-full object-cover"
-          loading="lazy"
-          format="webp"
-        />
-      </Transition>
+      <NuxtLink :to="`/products/${id}`" class="block h-full w-full">
+        <Transition name="fade" mode="out-in">
+          <NuxtImg
+            :key="currentIndex"
+            :src="images[currentIndex]"
+            :alt="`${name} – image ${currentIndex + 1}`"
+            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            format="webp"
+          />
+        </Transition>
+      </NuxtLink>
 
       <!-- Arrows (visible on hover, only when multiple images) -->
       <template v-if="images.length > 1">
         <UButton
-          class="absolute left-1.5 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-1 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-black/60 active:bg-black/60"
-          aria-label="Previous image"
           icon="i-lucide-chevron-left"
-
-          @click.stop="prev"
+          class="absolute left-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm rounded-full bg-black/40 text-white hover:bg-black/60"
+          color="neutral"
+          variant="ghost"
+          square
+          size="xs"
+          aria-label="Previous image"
+          @click.prevent="prev"
         />
         <UButton
-          class="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-1 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-black/60 active:bg-black/60"
-          aria-label="Next image"
           icon="i-lucide-chevron-right"
-          @click.stop="next"
+          class="absolute right-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm rounded-full bg-black/40 text-white hover:bg-black/60"
+          color="neutral"
+          variant="ghost"
+          square
+          size="xs"
+          aria-label="Next image"
+          @click.prevent="next"
         />
- 
 
         <!-- Dot indicators -->
         <div class="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
@@ -50,7 +59,7 @@
       <div class="absolute left-2 top-2">
         <span
           v-if="badge"
-          class="rounded-full bg-[var(--color-brand)] px-2 py-0.5 text-xs font-semibold text-white"
+          class="rounded-full bg-[var(--color-brand)] px-2 py-0.5 text-xs font-semibold text-[var(--color-text-rounded-label)]"
         >
           {{ badge }}
         </span>
@@ -63,9 +72,11 @@
         {{ category }}
       </p>
 
-      <h3 class="line-clamp-2 text-sm font-semibold text-[var(--color-text)]">
-        {{ name }}
-      </h3>
+      <NuxtLink :to="`/products/${id}`">
+        <h3 class="line-clamp-2 text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-brand)] transition-colors">
+          {{ name }}
+        </h3>
+      </NuxtLink>
 
       <p class="line-clamp-2 text-xs text-[var(--color-muted)]">
         {{ description }}
@@ -87,12 +98,39 @@
           </div>
         </div>
 
+        <!-- Add to cart / quantity controls -->
+        <div v-if="cartQty > 0" class="flex items-center gap-1">
+          <UButton
+            icon="i-lucide-minus"
+            color="neutral"
+            variant="outline"
+            size="xs"
+            square
+            aria-label="Decrease quantity"
+            @click="cartStore.updateQuantity(id, cartQty - 1)"
+          />
+          <span class="min-w-5 text-center text-sm font-semibold text-[var(--color-text)]">
+            {{ cartQty }}
+          </span>
+          <UButton
+            icon="i-lucide-plus"
+            color="neutral"
+            variant="outline"
+            size="xs"
+            square
+            aria-label="Increase quantity"
+            @click="cartStore.add(id)"
+          />
+        </div>
+
         <UButton
+          v-else
           color="neutral"
           variant="solid"
           size="sm"
           icon="i-lucide-shopping-cart"
-          class="bg-[var(--color-brand)] text-white hover:opacity-90"
+          class="bg-[var(--color-brand)] text-[var(--color-text-button)] hover:opacity-90"
+          @click="cartStore.add(id)"
         >
           Add
         </UButton>
@@ -102,7 +140,10 @@
 </template>
 
 <script setup lang="ts">
+import { useCartStore } from '~/stores/cart'
+
 const props = withDefaults(defineProps<{
+  id: number
   name: string
   description: string
   price: number
@@ -115,6 +156,9 @@ const props = withDefaults(defineProps<{
   category: 'General',
   layout: 'vertical',
 })
+
+const cartStore = useCartStore()
+const cartQty = computed(() => cartStore.getQuantity(props.id))
 
 const currentIndex = ref(0)
 
