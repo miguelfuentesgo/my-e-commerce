@@ -1,0 +1,46 @@
+﻿@import "tailwindcss";
+@import "@nuxt/ui";
+
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+
+@theme {
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-brand: #D4A017;
+  --color-surface: #FFFDF0;
+  --color-surface-elevated: #FFFFFF;
+  --color-muted: #A08C3A;
+  --color-border: #F0E4A0;
+  --color-background: #FFFDF0;
+  --color-text: #1A1500;
+  --color-text-input: #1A1500;
+  --color-text-button: #1A1500;
+  --color-text-rounded-label: #1A1500;
+  --color-icon-input: #A08C3A;
+  --color-text-input-placeholder: #C4A84A;
+}
+
+.dark {
+  --color-brand: #FFD84D;
+  --color-surface: #141200;
+  --color-surface-elevated: #1F1C00;
+  --color-muted: #B89E40;
+  --color-border: #2E2900;
+  --color-background: #141200;
+  --color-text: #FFF8D6;
+  --color-text-input: #FFF8D6;
+  --color-text-button: #1A1500;
+  --color-text-rounded-label: #1A1500;
+  --color-icon-input: #B89E40;
+  --color-text-input-placeholder: #8A7530;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+}
