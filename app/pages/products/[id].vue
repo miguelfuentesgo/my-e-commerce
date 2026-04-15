@@ -209,6 +209,8 @@ const route = useRoute()
 const productsStore = useProductsStore()
 const cartStore = useCartStore()
 
+useProducts()
+
 const productId = computed(() => Number(route.params.id))
 const product = computed(() => productsStore.getById(productId.value))
 

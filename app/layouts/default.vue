@@ -8,7 +8,7 @@
           to="/"
           class="shrink-0 text-lg font-semibold text-[var(--color-brand)]"
         >
-          Shop
+          My E
         </NuxtLink>
 
         <UInput
@@ -17,12 +17,25 @@
           placeholder="Search products..."
           leading-icon="i-lucide-search"
           size="md"
+          clearable
+          @clear="searchQuery = ''"
           :ui="{
             base: 'bg-[var(--color-background)] ring-[var(--color-border)] text-[var(--color-text-input)] placeholder:text-[var(--color-text-input-placeholder)] focus-visible:ring-[var(--color-border)]',
             leadingIcon: 'text-[var(--color-icon-input)] size-4'
        
           }"
-        />
+        >
+        <template v-if="searchQuery?.length" #trailing>
+          <UButton
+            color="neutral"
+            variant="link"
+            size="sm"
+            icon="i-lucide-circle-x"
+            aria-label="Clear input"
+            @click="searchQuery = ''"
+          />
+        </template>
+        </UInput>
 
         <div class="flex shrink-0 items-center gap-0.5">
           <div class="md:hidden">
@@ -285,9 +298,15 @@ const colorMode = useColorMode()
 const cartStore = useCartStore()
 const productsStore = useProductsStore()
 const toast = useToast()
+const route = useRoute()
+const router = useRouter()
 const menuOpen = ref(false)
 const cartOpen = ref(false)
-const searchQuery = ref('')
+const searchQuery = ref(typeof route.query.search === 'string' ? route.query.search : '')
+
+watch(searchQuery, (val) => {
+  router.push({ query: { ...route.query, search: val || undefined } })
+})
 
 function toggleTheme() {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
@@ -310,17 +329,23 @@ function handlePlaceOrder() {
         navigateTo('/orders')
       },
     }],
+    ui: {
+      root: 'bg-[var(--color-surface-elevated)] border border-[var(--color-border)]',
+      icon: 'text-[var(--color-brand)]',
+      title: 'text-[var(--color-brand)]',
+      description: 'text-[var(--color-brand)]',
+      actions: 'text-[var(--color-brand)]',
+      progress: 'bg-[var(--color-brand)]',
+    }
   })
 }
-
-const route = useRoute()
 
 const categories = [
   { label: 'All', to: '/' },
   { label: 'Electronics', to: '/?category=electronics' },
-  { label: 'Accessories', to: '/?category=accessories' },
-  { label: 'Lifestyle', to: '/?category=lifestyle' },
-  { label: 'Sport', to: '/?category=sport' },
+  { label: "Men's Clothing", to: "/?category=men's clothing" },
+  { label: "Women's Clothing", to: "/?category=women's clothing" },
+  { label: 'Jewelery', to: '/?category=jewelery' },
 ]
 
 function isActive(item: { label: string; to: string }) {

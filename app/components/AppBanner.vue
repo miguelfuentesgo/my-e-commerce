@@ -46,11 +46,11 @@
 
         <div class="relative flex h-full flex-col sm:flex-row">
           <!-- Image -->
-          <div class="h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-1/2">
+          <div class="h-52 w-full shrink-0 overflow-hidden sm:h-auto sm:w-2/5 sm:self-stretch">
             <NuxtImg
               :src="product.images[0]"
               :alt="product.name"
-              class="h-full w-full object-cover"
+              class="h-full w-full pt-5 object-contain md:h-100 md:pt-0"
               loading="eager"
               format="webp"
             />
